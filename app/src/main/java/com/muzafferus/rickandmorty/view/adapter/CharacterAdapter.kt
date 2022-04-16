@@ -2,16 +2,21 @@ package com.muzafferus.rickandmorty.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.muzafferus.rickandmorty.CharactersListQuery
 import com.muzafferus.rickandmorty.R
 import com.muzafferus.rickandmorty.databinding.ItemCharacterBinding
 
 class CharacterAdapter :
     ListAdapter<CharactersListQuery.Result, CharacterViewHolder>(CharacterDiffUtil()) {
+
+    var onItemClicked: ((CharactersListQuery.Result) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharacterViewHolder {
         val binding: ItemCharacterBinding = DataBindingUtil.inflate(
@@ -25,6 +30,12 @@ class CharacterAdapter :
 
     override fun onBindViewHolder(holder: CharacterViewHolder, position: Int) {
         holder.binding.character = getItem(position)
+
+        val character = getItem(position)
+        holder.binding.root.setOnClickListener {
+            onItemClicked?.invoke(character)
+        }
+
     }
 
 }
@@ -47,4 +58,9 @@ class CharacterDiffUtil : DiffUtil.ItemCallback<CharactersListQuery.Result>() {
         return oldItem == newItem
     }
 
+}
+
+@BindingAdapter("imageUrl")
+fun setImageUrl(imageView: ImageView, url: String?) {
+    imageView.load(url) { crossfade(true) }
 }

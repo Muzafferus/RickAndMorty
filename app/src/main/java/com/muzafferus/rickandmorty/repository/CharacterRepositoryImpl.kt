@@ -2,6 +2,7 @@ package com.muzafferus.rickandmorty.repository
 
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.coroutines.await
+import com.muzafferus.rickandmorty.CharacterQuery
 import com.muzafferus.rickandmorty.CharactersListQuery
 import com.muzafferus.rickandmorty.networking.RickAndMortyApi
 import javax.inject.Inject
@@ -12,5 +13,9 @@ class CharacterRepositoryImpl @Inject constructor(
 
     override suspend fun queryCharactersList(): Response<CharactersListQuery.Data> {
         return webService.getApolloClient().query(CharactersListQuery()).await()
+    }
+
+    override suspend fun queryCharacter(id: String): Response<CharacterQuery.Data> {
+        return webService.getApolloClient().query(CharacterQuery(id)).await()
     }
 }
